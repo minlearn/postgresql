@@ -1,11 +1,10 @@
 
 #############
 
+silent() { "$@" >/dev/null 2>&1; }
+
 echo "Installing Dependencies"
-apt-get install -y curl
-apt-get install -y sudo
-apt-get install -y mc
-apt-get install -y gnupg
+silent apt-get install -y curl sudo mc gnupg
 echo "Installed Dependencies"
 
 echo "Setting up PostgreSQL Repository"
@@ -15,8 +14,8 @@ curl -sSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor --o
 echo "Setup PostgreSQL Repository"
 
 echo "Installing PostgreSQL"
-apt-get update
-apt-get install -y postgresql
+silent apt-get update
+silent apt-get install -y postgresql
 
 cat <<EOF >/etc/postgresql/17/main/pg_hba.conf
 # PostgreSQL Client Authentication Configuration File
@@ -124,15 +123,15 @@ echo "Installed PostgreSQL"
 read -r -p "Would you like to add Adminer? <y/N> " prompt
 if [[ "${prompt,,}" =~ ^(y|yes)$ ]]; then
   echo "Installing Adminer"
-  apt install -y adminer
+  silent apt install -y adminer
   a2enconf adminer
   systemctl reload apache2
   echo "Installed Adminer"
 fi
 
 echo "Cleaning up"
-apt-get -y autoremove
-apt-get -y autoclean
+silent apt-get -y autoremove
+silent apt-get -y autoclean
 echo "Cleaned"
 
 #############
